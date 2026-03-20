@@ -1,6 +1,6 @@
 {
   "name": "@sadwx/line-exec-approval-plugin",
-  "version": "0.0.0-semantic-release",
+  "version": "1.0.0",
   "description": "OpenClaw plugin: LINE Flex Message cards for exec approval requests",
   "type": "module",
   "main": "dist/index.js",
