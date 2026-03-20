@@ -1,6 +1,6 @@
 {
-  "name": "line-exec-approval-plugin",
-  "version": "0.1.0",
+  "name": "@sadwx/line-exec-approval-plugin",
+  "version": "0.0.0-semantic-release",
   "description": "OpenClaw plugin: LINE Flex Message cards for exec approval requests",
   "type": "module",
   "main": "dist/index.js",
@@ -17,7 +17,8 @@
     "lint:fix": "eslint src --fix",
     "format": "prettier --write src",
     "format:check": "prettier --check src",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "release": "semantic-release"
   },
   "keywords": [
     "openclaw",
@@ -29,10 +30,47 @@
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.0.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^12.0.6",
+    "@semantic-release/npm": "^13.1.5",
+    "@semantic-release/release-notes-generator": "^14.1.0",
     "@types/node": "^22.0.0",
     "eslint": "^9.0.0",
     "prettier": "^3.0.0",
+    "semantic-release": "^25.0.3",
     "typescript": "^5.5.0",
     "typescript-eslint": "^8.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogFile": "CHANGELOG.md"
+        }
+      ],
+      "@semantic-release/npm",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "package.json",
+            "CHANGELOG.md"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ],
+      "@semantic-release/github"
+    ]
   }
 }
