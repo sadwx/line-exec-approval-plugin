@@ -1,5 +1,5 @@
 /**
- * line-approval-flex — OpenClaw plugin
+ * line-exec-approval-plugin — OpenClaw plugin
  *
  * Listens for exec.approval.requested gateway events and pushes
  * an interactive LINE Flex Message card with Allow Once / Allow Always / Deny buttons.
@@ -23,13 +23,13 @@ export default function lineApprovalFlexPlugin(api: OpenClawPluginApi): void {
 
     const token = resolveLineToken(pluginCfg, api.config);
     if (!token) {
-      logger.warn("[line-approval-flex] No LINE channel access token found; skipping");
+      logger.warn("[line-exec-approval-plugin] No LINE channel access token found; skipping");
       return;
     }
 
     const userId = pluginCfg?.lineUserId;
     if (!userId) {
-      logger.warn("[line-approval-flex] No lineUserId configured; skipping");
+      logger.warn("[line-exec-approval-plugin] No lineUserId configured; skipping");
       return;
     }
 
@@ -44,13 +44,13 @@ export default function lineApprovalFlexPlugin(api: OpenClawPluginApi): void {
   });
 
   api.registerService({
-    id: "line-approval-flex",
+    id: "line-exec-approval-plugin",
     start(): void {
-      logger.info("[line-approval-flex] service starting");
+      logger.info("[line-exec-approval-plugin] service starting");
       subscriber.start();
     },
     stop(): void {
-      logger.info("[line-approval-flex] service stopping");
+      logger.info("[line-exec-approval-plugin] service stopping");
       subscriber.stop();
     },
   });
