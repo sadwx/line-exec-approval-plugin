@@ -1,0 +1,16 @@
+{
+  "id": "line-approval-flex",
+  "name": "LINE Approval Flex",
+  "description": "Sends exec approval requests to LINE as interactive Flex Message cards with approve/deny buttons.",
+  "version": "0.1.0",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": { "type": "boolean" },
+      "lineUserId": { "type": "string" },
+      "channelAccessToken": { "type": "string" },
+      "channelAccessTokenFile": { "type": "string" }
+    }
+  }
+}
