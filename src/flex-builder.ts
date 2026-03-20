@@ -63,7 +63,7 @@ function buildAction(
 
 export function buildApprovalFlexMessage(
   approval: ExecApprovalRequest,
-  buttonAction: ButtonAction = "command",
+  buttonAction: ButtonAction = "silent",
 ): FlexMessage {
   const { id, request } = approval;
   const shortId = id.slice(0, 8);

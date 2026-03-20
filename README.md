@@ -98,6 +98,7 @@ Then add the `plugins.entries` config block above (without `plugins.load.paths`)
 | `channelAccessToken` | string | — | Inline plaintext channel access token |
 | `channelAccessTokenFile` | string | — | Path to a file containing the channel access token |
 | `channelAccessTokenEnv` | string | — | Name of an environment variable containing the channel access token |
+| `buttonAction` | string | — | How buttons behave when tapped: `"command"`, `"friendly"`, or `"silent"` (default: `"silent"`) |
 | `enabled` | boolean | — | Set to `false` to disable without removing config (default: `true`) |
 
 Exactly one of `channelAccessToken`, `channelAccessTokenFile`, or `channelAccessTokenEnv` should be set. If none are set, the plugin falls back to the LINE channel config in OpenClaw.
@@ -128,6 +129,27 @@ Exactly one of `channelAccessToken`, `channelAccessTokenFile`, or `channelAccess
         }
       }
     }
+  }
+}
+```
+
+
+### Button action modes
+
+Controls what appears in the LINE chat when an approval button is tapped.
+
+| Value | Chat behaviour | Notes |
+|---|---|---|
+| `"silent"` | Nothing appears in chat **(default)** | Cleanest UX; approval resolves silently |
+| `"friendly"` | Shows the button label (e.g. ✅ Allow Once) | Visible confirmation without raw commands |
+| `"command"` | Shows the raw `/approve <id> allow-once` text | Original behaviour; useful for debugging |
+
+```json
+{
+  "config": {
+    "lineUserId": "U1234567890abcdef1234567890abcdef",
+    "channelAccessTokenFile": "/path/to/token.txt",
+    "buttonAction": "silent"
   }
 }
 ```

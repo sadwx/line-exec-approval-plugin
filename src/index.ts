@@ -33,7 +33,7 @@ export default function lineApprovalFlexPlugin(api: OpenClawPluginApi): void {
       return;
     }
 
-    const buttonAction: ButtonAction = pluginCfg.buttonAction ?? "command";
+    const buttonAction: ButtonAction = pluginCfg.buttonAction ?? "silent";
     const flex = buildApprovalFlexMessage(payload, buttonAction);
     await pushFlexMessage(token, userId, flex, logger);
   }

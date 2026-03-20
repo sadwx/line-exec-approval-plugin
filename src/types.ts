@@ -81,7 +81,7 @@ export interface PluginConfig {
   channelAccessTokenEnv?: string;
   /**
    * Controls how approval buttons behave when tapped.
-   * @default "command"
+   * @default "silent"
    */
   buttonAction?: ButtonAction;
 }
