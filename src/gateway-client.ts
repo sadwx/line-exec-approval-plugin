@@ -59,7 +59,7 @@ export function createGatewaySubscriber(opts: GatewaySubscriberOptions) {
 
     const WS = getWebSocketClass();
     if (!WS) {
-      logger.error("[line-approval-flex] No WebSocket implementation available");
+      logger.error("[line-exec-approval-plugin] No WebSocket implementation available");
       return;
     }
 
@@ -67,13 +67,13 @@ export function createGatewaySubscriber(opts: GatewaySubscriberOptions) {
       ws = new WS(url);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      logger.error(`[line-approval-flex] WS connect error: ${msg}`);
+      logger.error(`[line-exec-approval-plugin] WS connect error: ${msg}`);
       scheduleReconnect();
       return;
     }
 
     ws.addEventListener("open", () => {
-      logger.info("[line-approval-flex] WS connected, authenticating...");
+      logger.info("[line-exec-approval-plugin] WS connected, authenticating...");
       ws?.send(
         JSON.stringify({
           type: "req",
@@ -103,9 +103,9 @@ export function createGatewaySubscriber(opts: GatewaySubscriberOptions) {
         const res = frame as GatewayResponseFrame;
         if (res.id === CONNECT_REQUEST_ID) {
           if (res.ok) {
-            logger.info("[line-approval-flex] gateway auth OK, listening for approvals");
+            logger.info("[line-exec-approval-plugin] gateway auth OK, listening for approvals");
           } else {
-            logger.error(`[line-approval-flex] gateway auth FAILED: ${JSON.stringify(res.error)}`);
+            logger.error(`[line-exec-approval-plugin] gateway auth FAILED: ${JSON.stringify(res.error)}`);
           }
         }
         return;
@@ -115,10 +115,10 @@ export function createGatewaySubscriber(opts: GatewaySubscriberOptions) {
         const evtFrame = frame as { type: "event"; event: string; payload?: unknown };
         if (evtFrame.event === "exec.approval.requested" && evtFrame.payload) {
           const payload = evtFrame.payload as ExecApprovalRequest;
-          logger.info(`[line-approval-flex] approval requested: ${payload.id}`);
+          logger.info(`[line-exec-approval-plugin] approval requested: ${payload.id}`);
           onApprovalRequested(payload).catch((err: unknown) => {
             const msg = err instanceof Error ? err.message : String(err);
-            logger.error(`[line-approval-flex] handler error: ${msg}`);
+            logger.error(`[line-exec-approval-plugin] handler error: ${msg}`);
           });
         }
       }
@@ -127,7 +127,7 @@ export function createGatewaySubscriber(opts: GatewaySubscriberOptions) {
     ws.addEventListener("close", (evt: CloseEvent) => {
       if (!stopped) {
         logger.warn(
-          `[line-approval-flex] WS closed (${evt.code.toString()}); reconnecting in ${String(RECONNECT_DELAY_MS / 1000)}s`,
+          `[line-exec-approval-plugin] WS closed (${evt.code.toString()}); reconnecting in ${String(RECONNECT_DELAY_MS / 1000)}s`,
         );
         scheduleReconnect();
       }
