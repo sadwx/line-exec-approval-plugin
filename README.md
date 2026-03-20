@@ -63,18 +63,20 @@ Then configure under `plugins.entries.line-approval-flex.config`.
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `lineUserId` | string | ✅ | LINE user ID of the approver (`U` + 32 hex chars) |
-| `channelAccessToken` | string | — | LINE channel access token (inline) |
+| `channelAccessToken` | string | — | Inline plaintext channel access token |
 | `channelAccessTokenFile` | string | — | Path to a file containing the channel access token |
+| `channelAccessTokenEnv` | string | — | Name of an environment variable containing the channel access token |
 | `enabled` | boolean | — | Set to `false` to disable without removing config (default: `true`) |
 
 ### Token resolution order
 
 The plugin resolves the LINE channel access token in this order:
 
-1. `config.channelAccessToken` — explicit inline token
-2. `config.channelAccessTokenFile` — path to token file
-3. `channels.line.channelAccessToken` or `channels.line.tokenFile` in OpenClaw config — inherited from default LINE channel
-4. `LINE_CHANNEL_ACCESS_TOKEN` environment variable
+1. `config.channelAccessToken` — inline plaintext value
+2. `config.channelAccessTokenFile` — content of the specified file path
+3. `config.channelAccessTokenEnv` — value of the named environment variable
+4. `channels.line.channelAccessToken` or `channels.line.tokenFile` in OpenClaw config — inherited from default LINE channel
+5. `LINE_CHANNEL_ACCESS_TOKEN` environment variable
 
 ### Full config example
 

@@ -51,12 +51,25 @@ export interface LineAccountConfig {
   tokenFile?: string;
 }
 
-/** Plugin-specific configuration (from plugins.entries.line-approval-flex.config) */
+/**
+ * Plugin-specific configuration (from plugins.entries.line-approval-flex.config)
+ *
+ * Token resolution order:
+ * 1. channelAccessToken  — inline plaintext value
+ * 2. channelAccessTokenFile — path to a file containing the token
+ * 3. channelAccessTokenEnv  — name of an environment variable containing the token
+ * 4. channels.line.channelAccessToken / channels.line.tokenFile (inherited from core config)
+ * 5. LINE_CHANNEL_ACCESS_TOKEN environment variable
+ */
 export interface PluginConfig {
   enabled?: boolean;
   lineUserId?: string;
+  /** Inline plaintext channel access token */
   channelAccessToken?: string;
+  /** Path to a file containing the channel access token */
   channelAccessTokenFile?: string;
+  /** Name of an environment variable containing the channel access token */
+  channelAccessTokenEnv?: string;
 }
 
 /** Payload from the exec.approval.requested gateway event */

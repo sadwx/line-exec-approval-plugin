@@ -4,19 +4,34 @@ import type { LineChannelConfig, OpenClawConfig, PluginConfig, PluginLogger } fr
 
 const LINE_PUSH_URL = "https://api.line.me/v2/bot/message/push";
 
+/**
+ * Resolve the LINE channel access token.
+ *
+ * Resolution order:
+ * 1. pluginConfig.channelAccessToken  — inline plaintext value
+ * 2. pluginConfig.channelAccessTokenFile — content of the specified file
+ * 3. pluginConfig.channelAccessTokenEnv  — value of the specified env var
+ * 4. coreConfig.channels.line (accounts.default or top-level) tokenFile / channelAccessToken
+ * 5. LINE_CHANNEL_ACCESS_TOKEN environment variable
+ */
 export function resolveLineToken(
   pluginConfig: PluginConfig | undefined,
   coreConfig: OpenClawConfig,
 ): string | null {
-  // 1. Explicit token in plugin config
+  // 1. Inline plaintext
   if (pluginConfig?.channelAccessToken) return pluginConfig.channelAccessToken;
 
-  // 2. Token file path in plugin config
+  // 2. File path
   if (pluginConfig?.channelAccessTokenFile) {
     return readFileSync(pluginConfig.channelAccessTokenFile, "utf8").trim();
   }
 
-  // 3. Inherit from channels.line config
+  // 3. Environment variable name
+  if (pluginConfig?.channelAccessTokenEnv) {
+    return process.env[pluginConfig.channelAccessTokenEnv] ?? null;
+  }
+
+  // 4. Inherit from channels.line config
   const lineAccount: LineChannelConfig | undefined =
     (coreConfig.channels?.line?.accounts?.default as LineChannelConfig | undefined) ??
     coreConfig.channels?.line;
@@ -24,7 +39,7 @@ export function resolveLineToken(
   if (lineAccount?.channelAccessToken) return lineAccount.channelAccessToken;
   if (lineAccount?.tokenFile) return readFileSync(lineAccount.tokenFile, "utf8").trim();
 
-  // 4. Environment variable
+  // 5. Fallback env var
   return process.env.LINE_CHANNEL_ACCESS_TOKEN ?? null;
 }
 
@@ -45,7 +60,9 @@ export async function pushFlexMessage(
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    logger.error(`[line-approval-flex] LINE push failed: ${res.status.toString()} ${body}`);
+    logger.error(
+      `[line-approval-flex] LINE push failed: ${res.status.toString()} ${body}`,
+    );
     return false;
   }
 
