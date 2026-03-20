@@ -1,6 +1,6 @@
 import { createRequire } from "module";
 import type {
-  ExecApprovalRequestPayload,
+  ExecApprovalRequest,
   GatewayFrame,
   GatewayResponseFrame,
   OpenClawConfig,
@@ -34,7 +34,7 @@ function getWebSocketClass(): typeof WebSocket | null {
 export interface GatewaySubscriberOptions {
   getConfig: () => OpenClawConfig;
   logger: PluginLogger;
-  onApprovalRequested: (payload: ExecApprovalRequestPayload) => Promise<void>;
+  onApprovalRequested: (payload: ExecApprovalRequest) => Promise<void>;
 }
 
 export function createGatewaySubscriber(opts: GatewaySubscriberOptions) {
@@ -114,7 +114,7 @@ export function createGatewaySubscriber(opts: GatewaySubscriberOptions) {
       if (frame.type === "event") {
         const evtFrame = frame as { type: "event"; event: string; payload?: unknown };
         if (evtFrame.event === "exec.approval.requested" && evtFrame.payload) {
-          const payload = evtFrame.payload as ExecApprovalRequestPayload;
+          const payload = evtFrame.payload as ExecApprovalRequest;
           logger.info(`[line-approval-flex] approval requested: ${payload.id}`);
           onApprovalRequested(payload).catch((err: unknown) => {
             const msg = err instanceof Error ? err.message : String(err);

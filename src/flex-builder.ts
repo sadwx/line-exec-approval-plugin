@@ -1,4 +1,4 @@
-import type { ExecApprovalRequestPayload } from "./types.js";
+import type { ExecApprovalRequest } from "./types.js";
 
 const MAX_CMD_LENGTH = 80;
 const MAX_SESSION_LENGTH = 60;
@@ -49,11 +49,13 @@ interface FlexAction {
   text: string;
 }
 
-export function buildApprovalFlexMessage(approval: ExecApprovalRequestPayload): FlexMessage {
-  const shortId = approval.id.slice(0, 8);
-  const displayCmd = truncate(approval.command ?? "(unknown)", MAX_CMD_LENGTH);
+export function buildApprovalFlexMessage(approval: ExecApprovalRequest): FlexMessage {
+  const { id, request } = approval;
+  const shortId = id.slice(0, 8);
+
+  const displayCmd = truncate(request.command || "(unknown)", MAX_CMD_LENGTH);
   const displaySession = truncate(
-    approval.sessionKey ?? approval.agentId ?? "unknown",
+    request.sessionKey ?? request.agentId ?? "unknown",
     MAX_SESSION_LENGTH,
   );
 
@@ -119,7 +121,7 @@ export function buildApprovalFlexMessage(approval: ExecApprovalRequestPayload): 
             action: {
               type: "message",
               label: "✅ Allow Once",
-              text: `/approve ${approval.id} allow-once`,
+              text: `/approve ${id} allow-once`,
             },
           },
           {
@@ -129,14 +131,14 @@ export function buildApprovalFlexMessage(approval: ExecApprovalRequestPayload): 
             action: {
               type: "message",
               label: "⭐ Allow Always",
-              text: `/approve ${approval.id} allow-always`,
+              text: `/approve ${id} allow-always`,
             },
           },
           {
             type: "button",
             style: "secondary",
             height: "sm",
-            action: { type: "message", label: "❌ Deny", text: `/approve ${approval.id} deny` },
+            action: { type: "message", label: "❌ Deny", text: `/approve ${id} deny` },
           },
         ],
       },

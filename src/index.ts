@@ -11,12 +11,12 @@
 import { buildApprovalFlexMessage } from "./flex-builder.js";
 import { createGatewaySubscriber } from "./gateway-client.js";
 import { pushFlexMessage, resolveLineToken } from "./line-sender.js";
-import type { ExecApprovalRequestPayload, OpenClawPluginApi } from "./types.js";
+import type { ExecApprovalRequest, OpenClawPluginApi } from "./types.js";
 
 export default function lineApprovalFlexPlugin(api: OpenClawPluginApi): void {
   const { logger } = api;
 
-  async function handleApprovalRequested(payload: ExecApprovalRequestPayload): Promise<void> {
+  async function handleApprovalRequested(payload: ExecApprovalRequest): Promise<void> {
     const pluginCfg = api.pluginConfig;
 
     if (pluginCfg?.enabled === false) return;

@@ -52,7 +52,7 @@ export interface LineAccountConfig {
 }
 
 /**
- * Plugin-specific configuration (from plugins.entries.line-approval-flex.config)
+ * Plugin-specific configuration (from plugins.entries.line-exec-approval-plugin.config)
  *
  * Token resolution order:
  * 1. channelAccessToken  — inline plaintext value
@@ -72,18 +72,29 @@ export interface PluginConfig {
   channelAccessTokenEnv?: string;
 }
 
-/** Payload from the exec.approval.requested gateway event */
+/** The actual command/context details inside an approval request */
 export interface ExecApprovalRequestPayload {
-  id: string;
-  command?: string;
+  command: string;
   commandArgv?: string[];
   cwd?: string | null;
+  host?: string | null;
+  security?: string | null;
+  ask?: string | null;
   agentId?: string | null;
   sessionKey?: string | null;
   turnSourceChannel?: string | null;
   turnSourceTo?: string | null;
-  security?: string | null;
-  host?: string | null;
+}
+
+/**
+ * The WS event payload for exec.approval.requested.
+ * The actual command details are nested under `request`.
+ */
+export interface ExecApprovalRequest {
+  id: string;
+  request: ExecApprovalRequestPayload;
+  createdAtMs: number;
+  expiresAtMs: number;
 }
 
 /** Gateway WebSocket event frame */
