@@ -52,6 +52,15 @@ export interface LineAccountConfig {
 }
 
 /**
+ * How approval buttons behave when tapped.
+ *
+ * - "command"  — message action; sends the raw /approve command visibly in chat (default)
+ * - "friendly" — postback action with displayText; chat shows a friendly label instead of the command
+ * - "silent"   — postback action without displayText; nothing appears in chat
+ */
+export type ButtonAction = "command" | "friendly" | "silent";
+
+/**
  * Plugin-specific configuration (from plugins.entries.line-exec-approval-plugin.config)
  *
  * Token resolution order:
@@ -70,6 +79,11 @@ export interface PluginConfig {
   channelAccessTokenFile?: string;
   /** Name of an environment variable containing the channel access token */
   channelAccessTokenEnv?: string;
+  /**
+   * Controls how approval buttons behave when tapped.
+   * @default "command"
+   */
+  buttonAction?: ButtonAction;
 }
 
 /** The actual command/context details inside an approval request */

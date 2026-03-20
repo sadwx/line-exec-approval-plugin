@@ -11,7 +11,7 @@
 import { buildApprovalFlexMessage } from "./flex-builder.js";
 import { createGatewaySubscriber } from "./gateway-client.js";
 import { pushFlexMessage, resolveLineToken } from "./line-sender.js";
-import type { ExecApprovalRequest, OpenClawPluginApi } from "./types.js";
+import type { ButtonAction, ExecApprovalRequest, OpenClawPluginApi } from "./types.js";
 
 export default function lineApprovalFlexPlugin(api: OpenClawPluginApi): void {
   const { logger } = api;
@@ -33,7 +33,8 @@ export default function lineApprovalFlexPlugin(api: OpenClawPluginApi): void {
       return;
     }
 
-    const flex = buildApprovalFlexMessage(payload);
+    const buttonAction: ButtonAction = pluginCfg.buttonAction ?? "command";
+    const flex = buildApprovalFlexMessage(payload, buttonAction);
     await pushFlexMessage(token, userId, flex, logger);
   }
 

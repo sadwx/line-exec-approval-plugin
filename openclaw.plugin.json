@@ -2,7 +2,7 @@
   "id": "line-exec-approval-plugin",
   "name": "LINE Exec Approval Plugin",
   "description": "Sends exec approval requests to LINE as interactive Flex Message cards with approve/deny buttons.",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "configSchema": {
     "type": "object",
     "additionalProperties": false,
@@ -21,6 +21,15 @@
       },
       "channelAccessTokenEnv": {
         "type": "string"
+      },
+      "buttonAction": {
+        "type": "string",
+        "enum": [
+          "command",
+          "friendly",
+          "silent"
+        ],
+        "description": "command=shows raw /approve text, friendly=shows label, silent=nothing in chat"
       }
     }
   }

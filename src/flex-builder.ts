@@ -1,4 +1,4 @@
-import type { ExecApprovalRequest } from "./types.js";
+import type { ButtonAction, ExecApprovalRequest } from "./types.js";
 
 const MAX_CMD_LENGTH = 80;
 const MAX_SESSION_LENGTH = 60;
@@ -43,13 +43,28 @@ type FlexComponent =
   | { type: "separator"; margin?: string }
   | { type: "button"; style: string; color?: string; height?: string; action: FlexAction };
 
-interface FlexAction {
-  type: "message";
-  label: string;
-  text: string;
+type FlexAction =
+  | { type: "message"; label: string; text: string }
+  | { type: "postback"; label: string; data: string; displayText?: string };
+
+function buildAction(
+  label: string,
+  approveText: string,
+  buttonAction: ButtonAction,
+): FlexAction {
+  if (buttonAction === "command") {
+    return { type: "message", label, text: approveText };
+  }
+  const displayText = buttonAction === "friendly" ? label : undefined;
+  return displayText
+    ? { type: "postback", label, data: approveText, displayText }
+    : { type: "postback", label, data: approveText };
 }
 
-export function buildApprovalFlexMessage(approval: ExecApprovalRequest): FlexMessage {
+export function buildApprovalFlexMessage(
+  approval: ExecApprovalRequest,
+  buttonAction: ButtonAction = "command",
+): FlexMessage {
   const { id, request } = approval;
   const shortId = id.slice(0, 8);
 
@@ -118,27 +133,19 @@ export function buildApprovalFlexMessage(approval: ExecApprovalRequest): FlexMes
             style: "primary",
             color: "#5cb85c",
             height: "sm",
-            action: {
-              type: "message",
-              label: "✅ Allow Once",
-              text: `/approve ${id} allow-once`,
-            },
+            action: buildAction("✅ Allow Once", `/approve ${id} allow-once`, buttonAction),
           },
           {
             type: "button",
             style: "secondary",
             height: "sm",
-            action: {
-              type: "message",
-              label: "⭐ Allow Always",
-              text: `/approve ${id} allow-always`,
-            },
+            action: buildAction("⭐ Allow Always", `/approve ${id} allow-always`, buttonAction),
           },
           {
             type: "button",
             style: "secondary",
             height: "sm",
-            action: { type: "message", label: "❌ Deny", text: `/approve ${id} deny` },
+            action: buildAction("❌ Deny", `/approve ${id} deny`, buttonAction),
           },
         ],
       },
