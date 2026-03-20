@@ -1,4 +1,4 @@
-# line-approval-flex
+# line-exec-approval-plugin
 
 > OpenClaw plugin — deliver exec approval requests to LINE as interactive Flex Message cards
 
@@ -61,12 +61,12 @@ Clone or download this repo, then add to `~/.openclaw/openclaw.json`:
 ```json
 {
   "plugins": {
-    "allow": ["line-approval-flex"],
+    "allow": ["line-exec-approval-plugin"],
     "load": {
-      "paths": ["/path/to/line-approval-flex"]
+      "paths": ["/path/to/line-exec-approval-plugin"]
     },
     "entries": {
-      "line-approval-flex": {
+      "line-exec-approval-plugin": {
         "enabled": true,
         "config": {
           "lineUserId": "U1234567890abcdef1234567890abcdef",
@@ -83,7 +83,7 @@ Restart the gateway to load the plugin.
 ### Option B: npm (once published)
 
 ```bash
-openclaw plugins install openclaw-line-approval-flex
+openclaw plugins install openclaw-line-exec-approval-plugin
 ```
 
 Then add the `plugins.entries` config block above (without `plugins.load.paths`).
@@ -115,12 +115,12 @@ Exactly one of `channelAccessToken`, `channelAccessTokenFile`, or `channelAccess
 ```json
 {
   "plugins": {
-    "allow": ["line-approval-flex"],
+    "allow": ["line-exec-approval-plugin"],
     "load": {
-      "paths": ["/home/user/.openclaw/plugins/line-approval-flex"]
+      "paths": ["/home/user/.openclaw/plugins/line-exec-approval-plugin"]
     },
     "entries": {
-      "line-approval-flex": {
+      "line-exec-approval-plugin": {
         "enabled": true,
         "config": {
           "lineUserId": "U1234567890abcdef1234567890abcdef",

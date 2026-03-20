@@ -1,12 +1,14 @@
 {
-  "name": "line-approval-flex",
+  "name": "line-exec-approval-plugin",
   "version": "0.1.0",
   "description": "OpenClaw plugin: LINE Flex Message cards for exec approval requests",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "openclaw": {
-    "extensions": ["src/index.ts"]
+    "extensions": [
+      "src/index.ts"
+    ]
   },
   "scripts": {
     "build": "tsc",
@@ -17,7 +19,13 @@
     "format:check": "prettier --check src",
     "typecheck": "tsc --noEmit"
   },
-  "keywords": ["openclaw", "plugin", "line", "approval", "flex-message"],
+  "keywords": [
+    "openclaw",
+    "plugin",
+    "line",
+    "approval",
+    "flex-message"
+  ],
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.0.0",
