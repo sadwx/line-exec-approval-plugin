@@ -19,6 +19,33 @@ When OpenClaw asks for permission to run a shell command, this plugin pushes a r
 
 Works alongside other approval channels (e.g. Discord buttons). The first channel to resolve wins.
 
+
+## Screenshots
+
+### Approval card
+
+When an exec command requires approval, a Flex Message card is pushed to LINE:
+
+> The card appears the same across all button action modes. The difference is what happens **after** a button is tapped.
+
+### Button action modes
+
+**`silent`** — nothing appears in chat after tapping (default)
+
+![silent mode](https://github.com/user-attachments/assets/4e48f487-9b00-4374-b4c4-1330d729da25)
+
+---
+
+**`friendly`** — shows the button label (e.g. ✅ Allow Once)
+
+![friendly mode](https://github.com/user-attachments/assets/c8f2bb42-0da4-416c-9918-29fc8329521c)
+
+---
+
+**`command`** — shows the raw `/approve` command text
+
+![command mode](https://github.com/user-attachments/assets/60cd15dd-0ce8-435c-8d52-492401331459)
+
 ---
 
 ## Prerequisites
