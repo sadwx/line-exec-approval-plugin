@@ -1,3 +1,4 @@
+// v2 2026-03-23T08:39
 import type { ButtonAction, ExecApprovalRequest } from "./types.js";
 
 const MAX_SESSION_LENGTH = 60;
@@ -38,7 +39,6 @@ type FlexComponent =
       color?: string;
       wrap?: boolean;
       margin?: string;
-      maxLines?: number;
     }
   | { type: "separator"; margin?: string }
   | { type: "button"; style: string; color?: string; height?: string; action: FlexAction };
@@ -57,39 +57,13 @@ function buildAction(label: string, approveText: string, buttonAction: ButtonAct
     : { type: "postback", label, data: approveText };
 }
 
-function buildCommandDisplay(command: string, commandArgv: string[] | undefined): FlexComponent[] {
-  const binary = commandArgv?.[0] ?? command.split(" ")[0] ?? command;
-  const fullCommand = commandArgv && commandArgv.length > 0 ? commandArgv.join(" ") : command;
-  const hasArgs = fullCommand !== binary;
-
-  const components: FlexComponent[] = [
-    { type: "text", text: "Command", size: "xs", color: "#888888", weight: "bold" },
-    { type: "text", text: binary, size: "sm", weight: "bold", margin: "xs", wrap: true },
-  ];
-
-  if (hasArgs) {
-    components.push({
-      type: "text",
-      text: fullCommand,
-      size: "xs",
-      color: "#555555",
-      wrap: true,
-      margin: "xs",
-      maxLines: 6,
-    });
-  }
-
-  return components;
-}
-
 export function buildApprovalFlexMessage(
   approval: ExecApprovalRequest,
   buttonAction: ButtonAction = "silent",
 ): FlexMessage {
   const { id, request } = approval;
   const shortId = id.slice(0, 8);
-  const command = request.command || "(unknown)";
-  const commandComponents = buildCommandDisplay(command, request.commandArgv);
+  const binary = request.commandArgv?.[0] ?? request.command.split(" ")[0] ?? request.command;
   const displaySession = truncate(
     request.sessionKey ?? request.agentId ?? "unknown",
     MAX_SESSION_LENGTH,
@@ -97,7 +71,7 @@ export function buildApprovalFlexMessage(
 
   return {
     type: "flex",
-    altText: `⚠️ Exec Approval [${shortId}]\n${command.slice(0, 100)}`,
+    altText: `⚠️ Exec Approval [${shortId}]\n${request.command.slice(0, 100)}`,
     contents: {
       type: "bubble",
       size: "mega",
@@ -116,7 +90,8 @@ export function buildApprovalFlexMessage(
         layout: "vertical",
         paddingAll: "16px",
         contents: [
-          ...commandComponents,
+          { type: "text", text: "Command", size: "xs", color: "#888888", weight: "bold" },
+          { type: "text", text: binary, size: "sm", weight: "bold", margin: "xs", wrap: true },
           { type: "separator", margin: "md" },
           { type: "text", text: "Session", size: "xs", color: "#888888", weight: "bold", margin: "md" },
           { type: "text", text: displaySession, size: "xs", wrap: true, margin: "xs", color: "#555555" },
@@ -139,6 +114,10 @@ export function buildApprovalFlexMessage(
           {
             type: "button", style: "secondary", height: "sm",
             action: buildAction("❌ Deny", `/approve ${id} deny`, buttonAction),
+          },
+          {
+            type: "button", style: "secondary", height: "sm",
+            action: { type: "postback", label: "📋 Full Command", data: `approval-detail:${id}` },
           },
         ],
       },

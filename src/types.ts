@@ -1,109 +1,17 @@
-/**
- * Minimal OpenClaw plugin API type stubs.
- * Full types available via openclaw/plugin-sdk when openclaw is a peer dep.
- */
+import type { FlexMessage } from "./flex-builder.js";
 
-export interface PluginLogger {
-  debug?: (message: string) => void;
-  info: (message: string) => void;
-  warn: (message: string) => void;
-  error: (message: string) => void;
-}
-
-export interface ServiceRegistration {
-  id: string;
-  start: () => void | Promise<void>;
-  stop: () => void | Promise<void>;
-}
-
-export interface OpenClawPluginApi {
-  logger: PluginLogger;
-  config: OpenClawConfig;
-  pluginConfig: PluginConfig | undefined;
-  registerService: (service: ServiceRegistration) => void;
-  registerHook: (
-    events: string | string[],
-    handler: (event: unknown) => Promise<void> | void,
-  ) => void;
-}
-
-export interface OpenClawConfig {
-  gateway?: {
-    port?: number;
-    auth?: {
-      mode?: string;
-      token?: string;
-    };
-  };
-  channels?: {
-    line?: LineChannelConfig;
-  };
-}
-
-export interface LineChannelConfig {
-  channelAccessToken?: string;
-  tokenFile?: string;
-  accounts?: Record<string, LineAccountConfig>;
-}
-
-export interface LineAccountConfig {
-  channelAccessToken?: string;
-  tokenFile?: string;
-}
-
-/**
- * How approval buttons behave when tapped.
- *
- * - "command"  — message action; sends the raw /approve command visibly in chat (default)
- * - "friendly" — postback action with displayText; chat shows a friendly label instead of the command
- * - "silent"   — postback action without displayText; nothing appears in chat
- */
 export type ButtonAction = "command" | "friendly" | "silent";
 
-/**
- * Plugin-specific configuration (from plugins.entries.line-exec-approval-plugin.config)
- *
- * Token resolution order:
- * 1. channelAccessToken  — inline plaintext value
- * 2. channelAccessTokenFile — path to a file containing the token
- * 3. channelAccessTokenEnv  — name of an environment variable containing the token
- * 4. channels.line.channelAccessToken / channels.line.tokenFile (inherited from core config)
- * 5. LINE_CHANNEL_ACCESS_TOKEN environment variable
- */
-export interface PluginConfig {
-  enabled?: boolean;
-  lineUserId?: string;
-  /** Inline plaintext channel access token */
-  channelAccessToken?: string;
-  /** Path to a file containing the channel access token */
-  channelAccessTokenFile?: string;
-  /** Name of an environment variable containing the channel access token */
-  channelAccessTokenEnv?: string;
-  /**
-   * Controls how approval buttons behave when tapped.
-   * @default "silent"
-   */
-  buttonAction?: ButtonAction;
-}
-
-/** The actual command/context details inside an approval request */
 export interface ExecApprovalRequestPayload {
   command: string;
   commandArgv?: string[];
-  cwd?: string | null;
-  host?: string | null;
-  security?: string | null;
-  ask?: string | null;
-  agentId?: string | null;
-  sessionKey?: string | null;
-  turnSourceChannel?: string | null;
-  turnSourceTo?: string | null;
+  sessionKey?: string;
+  agentId?: string;
+  cwd?: string;
+  host?: string;
+  [key: string]: unknown;
 }
 
-/**
- * The WS event payload for exec.approval.requested.
- * The actual command details are nested under `request`.
- */
 export interface ExecApprovalRequest {
   id: string;
   request: ExecApprovalRequestPayload;
@@ -111,21 +19,82 @@ export interface ExecApprovalRequest {
   expiresAtMs: number;
 }
 
-/** Gateway WebSocket event frame */
-export interface GatewayEventFrame {
-  type: "event";
-  event: string;
-  payload?: unknown;
-  seq?: number;
+export interface PluginConfig {
+  enabled?: boolean;
+  lineUserId?: string;
+  lineChannelAccessToken?: string;
+  buttonAction?: ButtonAction;
+  [key: string]: unknown;
 }
 
-/** Gateway response frame */
-export interface GatewayResponseFrame {
-  type: "res";
+export type PluginLogger = Logger;
+
+export interface GatewayAuth {
+  mode: string;
+  token: string;
+}
+
+export interface GatewayConfig {
+  auth?: GatewayAuth;
+  port?: number;
+  [key: string]: unknown;
+}
+
+export interface OpenClawConfig {
+  gateway?: GatewayConfig;
+  channels?: {
+    line?: {
+      channelAccessToken?: string;
+      [key: string]: unknown;
+    };
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+}
+
+export interface Logger {
+  info(msg: string): void;
+  warn(msg: string): void;
+  error(msg: string): void;
+  debug(msg: string): void;
+}
+
+export interface ServiceRegistration {
   id: string;
-  ok: boolean;
-  result?: unknown;
-  error?: { code: string; message: string };
+  start(): void;
+  stop(): void;
 }
 
-export type GatewayFrame = GatewayEventFrame | GatewayResponseFrame | { type: string };
+export interface MessageReceivedHookContext {
+  from?: string;
+  content: string;
+  timestamp?: number;
+  channelId?: string;
+  accountId?: string;
+  conversationId?: string;
+  messageId?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface MessageReceivedHookEvent {
+  type?: string;
+  action?: string;
+  context: MessageReceivedHookContext;
+}
+
+export interface GatewayFrame {
+  type: string;
+  id?: string;
+  result?: unknown;
+  error?: string;
+  [key: string]: unknown;
+}
+
+export interface OpenClawPluginApi {
+  logger: Logger;
+  config: OpenClawConfig;
+  pluginConfig: PluginConfig;
+  registerService(service: ServiceRegistration): void;
+  registerHook(event: string, handler: (event: unknown) => Promise<void> | void): void;
+  pushLineMessage(userId: string, messages: FlexMessage[]): Promise<void>;
+}
