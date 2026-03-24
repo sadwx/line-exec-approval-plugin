@@ -1,3 +1,16 @@
+# [1.1.0](https://github.com/sadwx/line-exec-approval-plugin/compare/v1.0.0...v1.1.0) (2026-03-24)
+
+
+### Bug Fixes
+
+* resolve all lint and typecheck errors ([0171b72](https://github.com/sadwx/line-exec-approval-plugin/commit/0171b72b4c5ebf8a554aa40e362feb1bd15744ea))
+
+
+### Features
+
+* add Full Command postback button with push reply ([b1c4129](https://github.com/sadwx/line-exec-approval-plugin/commit/b1c4129790338ecf77f7460dae16cd551be65cad))
+* improve command display with binary name and full args wrap ([025f553](https://github.com/sadwx/line-exec-approval-plugin/commit/025f5531921c37a104c18041b57b763702b72877))
+
 # 1.0.0 (2026-03-20)
 
 
