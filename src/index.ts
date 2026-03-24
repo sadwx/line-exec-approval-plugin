@@ -38,7 +38,7 @@ export default function lineExecApprovalPlugin(api: OpenClawPluginApi): void {
 
   api.registerHook("message:received", async (event: unknown) => {
     const e = event as MessageReceivedHookEvent;
-    const content = e?.context?.content?.trim() ?? "";
+    const content = e.context.content.trim();
 
     if (!content.startsWith("approval-detail:")) return;
 

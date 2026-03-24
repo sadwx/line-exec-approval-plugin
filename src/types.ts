@@ -90,10 +90,19 @@ export interface GatewayFrame {
   [key: string]: unknown;
 }
 
+export interface GatewayResponseFrame {
+  type: string;
+  id?: string;
+  ok: boolean;
+  result?: unknown;
+  error?: unknown;
+  [key: string]: unknown;
+}
+
 export interface OpenClawPluginApi {
   logger: Logger;
   config: OpenClawConfig;
-  pluginConfig: PluginConfig;
+  pluginConfig?: PluginConfig;
   registerService(service: ServiceRegistration): void;
   registerHook(event: string, handler: (event: unknown) => Promise<void> | void): void;
   pushLineMessage(userId: string, messages: FlexMessage[]): Promise<void>;

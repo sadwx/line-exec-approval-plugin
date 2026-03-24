@@ -9,7 +9,7 @@ export function resolveLineToken(
 ): string | undefined {
   return (
     pluginCfg?.lineChannelAccessToken ??
-    (config?.channels?.line?.channelAccessToken as string | undefined)
+    (config.channels?.line?.channelAccessToken)
   );
 }
 
@@ -32,7 +32,7 @@ function linePost(token: string, body: unknown, logger: Logger): Promise<void> {
         res.on("data", (chunk: Buffer) => { raw += chunk.toString(); });
         res.on("end", () => {
           if (res.statusCode && res.statusCode >= 400) {
-            logger.error(`[line-exec-approval-plugin] LINE API error ${res.statusCode}: ${raw}`);
+            logger.error(`[line-exec-approval-plugin] LINE API error ${String(res.statusCode)}: ${raw}`);
           }
           resolve();
         });
